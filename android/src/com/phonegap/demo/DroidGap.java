@@ -35,6 +35,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 public class DroidGap extends Activity {
@@ -63,9 +65,12 @@ public class DroidGap extends Activity {
         
         /* This changes the setWebChromeClient to log alerts to LogCat!  Important for Javascript Debugging */
         
-        appView.setWebChromeClient(new GapClient(this));        
-        appView.getSettings().setJavaScriptEnabled(true);
-        appView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);                        
+        appView.setWebChromeClient(new GapClient(this));
+        WebSettings settings = appView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setDatabaseEnabled(true);
+        settings.setDatabasePath("/data/data/org.infil00p.testcase/app_database");
 
         
         /* Bind the appView object to the gap class methods */
@@ -139,6 +144,12 @@ public class DroidGap extends Activity {
             return true;
         }
     	
+    	public void onExceededDatabaseQuota(String url, String databaseIdentifier, long currentQuota, long estimatedSize, 
+    			long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater) 
+    	{
+    		Log.d(LOG_TAG, "We exceeded the quota");
+    		quotaUpdater.updateQuota(100000);
+    	}
 
     }
     
